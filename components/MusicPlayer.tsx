@@ -45,7 +45,7 @@ export function MusicPlayer() {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-gray-900/50 rounded-2xl border border-gray-800 p-6">
+    <div className="w-full max-w-4xl backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6">
       <div className="flex items-center gap-4 mb-6">
         <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 relative">
           <Music className="w-5 h-5 text-white" />
@@ -60,14 +60,14 @@ export function MusicPlayer() {
           )}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-gray-200">AI-Generated Music</h3>
-          <p className="text-sm text-gray-400">Real-time procedural audio for focus</p>
+          <h3 className="font-semibold text-white">AI-Generated Music</h3>
+          <p className="text-sm text-gray-300">Real-time procedural audio for focus</p>
         </div>
         {musicPlaying && (
           <motion.div
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="flex items-center gap-2 text-green-400 text-sm"
+            className="flex items-center gap-2 text-green-400 text-sm font-medium"
           >
             <div className="w-2 h-2 rounded-full bg-green-400" />
             Playing
@@ -94,7 +94,7 @@ export function MusicPlayer() {
               px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2
               ${musicType === type.id
                 ? `bg-gradient-to-r ${type.color} text-white shadow-lg`
-                : 'bg-gray-800 text-gray-400 hover:text-gray-200'
+                : 'bg-white/5 text-gray-200 hover:bg-white/10 hover:text-white border border-white/10'
               }
             `}
           >
@@ -109,12 +109,12 @@ export function MusicPlayer() {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleMusic}
-            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/10"
           >
             {musicPlaying ? (
-              <Volume2 className="w-5 h-5 text-gray-300" />
+              <Volume2 className="w-5 h-5 text-white" />
             ) : (
-              <VolumeX className="w-5 h-5 text-gray-400" />
+              <VolumeX className="w-5 h-5 text-gray-300" />
             )}
           </button>
 
@@ -125,14 +125,14 @@ export function MusicPlayer() {
               max="100"
               value={volume * 100}
               onChange={(e) => setVolume(Number(e.target.value) / 100)}
-              className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer slider"
+              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer slider"
               style={{
-                background: `linear-gradient(to right, rgb(168, 85, 247) 0%, rgb(236, 72, 153) ${volume * 100}%, rgb(31, 41, 55) ${volume * 100}%, rgb(31, 41, 55) 100%)`,
+                background: `linear-gradient(to right, rgb(168, 85, 247) 0%, rgb(236, 72, 153) ${volume * 100}%, rgba(255, 255, 255, 0.1) ${volume * 100}%, rgba(255, 255, 255, 0.1) 100%)`,
               }}
             />
           </div>
 
-          <span className="text-sm text-gray-400 w-12 text-right">
+          <span className="text-sm text-white font-medium w-12 text-right">
             {Math.round(volume * 100)}%
           </span>
         </div>

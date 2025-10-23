@@ -30,7 +30,7 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
 
   return (
     <div className="w-full max-w-4xl">
-      <div className="bg-gray-900/50 rounded-2xl border border-gray-800 p-6 overflow-hidden relative">
+      <div className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 overflow-hidden relative">
         {/* Background glow effect */}
         {streak > 0 && (
           <motion.div
@@ -57,18 +57,18 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
                 <Flame className="w-6 h-6 text-white" />
               </motion.div>
               <div>
-                <h3 className="text-xl font-bold text-gray-200">Daily Streak</h3>
-                <p className="text-sm text-gray-400">{getStreakMessage(streak)}</p>
+                <h3 className="text-xl font-bold text-white">Daily Streak</h3>
+                <p className="text-sm text-gray-300">{getStreakMessage(streak)}</p>
               </div>
             </div>
 
             {bestStreak > 0 && (
               <div className="text-right">
-                <div className="flex items-center gap-1 text-gray-400 text-xs mb-1">
+                <div className="flex items-center gap-1 text-gray-300 text-xs mb-1">
                   <TrendingUp className="w-3 h-3" />
                   <span>Best</span>
                 </div>
-                <div className="text-2xl font-bold text-gray-300">
+                <div className="text-2xl font-bold text-white">
                   {bestStreak} days
                 </div>
               </div>
@@ -100,7 +100,7 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
                   p-3 rounded-xl text-center transition-all
                   ${streak >= milestone
                     ? `bg-gradient-to-r ${getStreakColor(milestone)} text-white`
-                    : 'bg-gray-800 text-gray-500'
+                    : 'bg-white/5 text-gray-400 border border-white/10'
                   }
                 `}
               >
@@ -118,13 +118,13 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
           {/* Progress to next milestone */}
           {streak > 0 && streak < 30 && (
             <div className="mt-4">
-              <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+              <div className="flex items-center justify-between text-xs text-gray-300 mb-2">
                 <span>Next milestone</span>
                 <span>
                   {streak >= 14 ? '30 days' : streak >= 7 ? '14 days' : streak >= 3 ? '7 days' : '3 days'}
                 </span>
               </div>
-              <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{
