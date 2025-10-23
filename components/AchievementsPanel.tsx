@@ -33,8 +33,8 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
               <Trophy className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-200">Achievements</h2>
-              <p className="text-sm text-gray-400">
+              <h2 className="text-2xl font-bold text-white">Achievements</h2>
+              <p className="text-sm text-gray-300">
                 {unlockedCount} of {totalCount} unlocked
               </p>
             </div>
@@ -44,12 +44,12 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
             <div className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {Math.round(progress)}%
             </div>
-            <div className="text-xs text-gray-400">Complete</div>
+            <div className="text-xs text-gray-300">Complete</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="mb-6 h-3 bg-gray-800 rounded-full overflow-hidden">
+        <div className="mb-6 h-3 bg-white/10 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
@@ -76,7 +76,7 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                   relative p-4 rounded-2xl border-2 transition-all
                   ${isUnlocked
                     ? 'border-yellow-500/50 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 hover:border-yellow-500'
-                    : 'border-gray-800 bg-gray-900/50 hover:border-gray-700'
+                    : 'border-white/10 bg-white/5 hover:border-white/20'
                   }
                 `}
               >
@@ -99,14 +99,14 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
 
                   <h3 className={`
                     font-semibold text-sm mb-1
-                    ${isUnlocked ? 'text-gray-200' : 'text-gray-500'}
+                    ${isUnlocked ? 'text-white' : 'text-gray-300'}
                   `}>
                     {achievement.title}
                   </h3>
 
                   {!isUnlocked && (
                     <div className="absolute top-2 right-2">
-                      <Lock className="w-4 h-4 text-gray-600" />
+                      <Lock className="w-4 h-4 text-gray-400" />
                     </div>
                   )}
                 </div>
@@ -141,12 +141,12 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                   : 'bg-gray-700'
                 }
               `}>
-                <div className="bg-gray-900 rounded-2xl p-6 relative">
+                <div className="backdrop-blur-2xl bg-gray-900/95 rounded-2xl p-6 relative">
                   <button
                     onClick={() => setSelectedAchievement(null)}
-                    className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <X className="w-5 h-5 text-gray-400" />
+                    <X className="w-5 h-5 text-gray-300" />
                   </button>
 
                   <div className="text-center">
@@ -157,11 +157,11 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                       {selectedAchievement.icon}
                     </div>
 
-                    <h2 className="text-2xl font-bold text-gray-200 mb-2">
+                    <h2 className="text-2xl font-bold text-white mb-2">
                       {selectedAchievement.title}
                     </h2>
 
-                    <p className="text-gray-400 mb-4">
+                    <p className="text-gray-300 mb-4">
                       {selectedAchievement.description}
                     </p>
 
@@ -171,14 +171,14 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                         Unlocked!
                       </div>
                     ) : (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full text-gray-400">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-gray-300">
                         <Lock className="w-4 h-4" />
                         Locked
                       </div>
                     )}
 
-                    <div className="mt-4 pt-4 border-t border-gray-800">
-                      <div className="text-sm text-gray-400">
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="text-sm text-gray-300">
                         Requirement: {selectedAchievement.requirement}{' '}
                         {selectedAchievement.type === 'sessions' && 'sessions'}
                         {selectedAchievement.type === 'hours' && 'hours'}

@@ -79,9 +79,9 @@ export function AchievementNotification({ achievement, onClose }: AchievementNot
                     setIsVisible(false);
                     setTimeout(onClose, 300);
                   }}
-                  className="flex-shrink-0 p-1 rounded-lg hover:bg-gray-800 transition-colors"
+                  className="flex-shrink-0 p-1 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <X className="w-4 h-4 text-gray-400" />
+                  <X className="w-4 h-4 text-gray-300" />
                 </button>
               </div>
             </div>
