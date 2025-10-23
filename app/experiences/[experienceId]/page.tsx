@@ -22,44 +22,61 @@ export default async function ExperiencePage({
 	const motivationalQuote = getRandomQuote();
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
-			{/* Header */}
-			<div className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-				<div className="max-w-7xl mx-auto px-8 py-6">
-					<div className="flex justify-between items-center">
-						<div>
-							<h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-								FocusTime
-							</h1>
-							<p className="text-sm text-gray-400 mt-1">
-								Welcome back, <span className="text-gray-300">{displayName}</span>
-							</p>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-							<span className="text-sm text-gray-400">Active</span>
+		<div className="min-h-screen relative overflow-hidden">
+			{/* Animated Background Gradient */}
+			<div className="fixed inset-0 bg-gradient-to-br from-black via-[var(--neutral-900)] to-[var(--neutral-800)]" />
+			
+			{/* Ambient Light Effects */}
+			<div className="fixed top-0 left-1/4 w-96 h-96 bg-[var(--focus-primary)] rounded-full blur-[128px] opacity-10 animate-pulse" />
+			<div className="fixed bottom-0 right-1/4 w-96 h-96 bg-[var(--focus-secondary)] rounded-full blur-[128px] opacity-10 animate-pulse" style={{ animationDelay: '1s' }} />
+
+			{/* Content */}
+			<div className="relative z-10">
+				{/* Header - Minimal & Clean */}
+				<header className="border-b border-white/5 backdrop-blur-xl bg-black/20">
+					<div className="max-w-7xl mx-auto px-6 sm:px-8 py-6">
+						<div className="flex justify-between items-center">
+							{/* Logo */}
+							<div>
+								<h1 className="text-2xl font-semibold text-[var(--neutral-50)] tracking-tight">
+									FocusTime
+								</h1>
+								<p className="text-xs text-[var(--neutral-400)] mt-0.5">
+									Welcome back, <span className="text-[var(--neutral-300)]">{displayName}</span>
+								</p>
+							</div>
+
+							{/* Status Indicator */}
+							<div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+								<div className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
+								<span className="text-xs font-medium text-[var(--neutral-300)]">Active</span>
+							</div>
 						</div>
 					</div>
-					
-					{/* Motivational Quote */}
-					<div className="mt-4 p-4 bg-gray-800/30 rounded-xl border border-gray-700/50">
-						<p className="text-sm text-gray-300 italic text-center">
+				</header>
+
+				{/* Motivational Quote - Floating Card */}
+				<div className="max-w-3xl mx-auto px-6 sm:px-8 mt-8">
+					<div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+						<p className="text-sm text-[var(--neutral-300)] italic leading-relaxed">
 							"{motivationalQuote}"
 						</p>
 					</div>
 				</div>
-			</div>
 
-			{/* Main Content */}
-			<div className="max-w-7xl mx-auto px-8 py-12">
-				<FocusApp userId={userId} />
-			</div>
+				{/* Main Content */}
+				<main className="max-w-7xl mx-auto px-6 sm:px-8 py-16">
+					<FocusApp userId={userId} />
+				</main>
 
-			{/* Footer */}
-			<div className="border-t border-gray-800 mt-20">
-				<div className="max-w-7xl mx-auto px-8 py-6 text-center text-sm text-gray-500">
-					Stay focused. Stay productive. 🎯
-				</div>
+				{/* Footer - Minimal */}
+				<footer className="border-t border-white/5 mt-24">
+					<div className="max-w-7xl mx-auto px-6 sm:px-8 py-8 text-center">
+						<p className="text-xs text-[var(--neutral-500)]">
+							Designed with focus in mind
+						</p>
+					</div>
+				</footer>
 			</div>
 		</div>
 	);

@@ -1,24 +1,32 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FocusTimer } from './FocusTimer';
-import { ModeSelector } from './ModeSelector';
+import { PremiumTimer } from './PremiumTimer';
+import { PremiumModeSelector } from './PremiumModeSelector';
 import { MusicPlayer } from './MusicPlayer';
 import { StatsPanel } from './StatsPanel';
 import { StreakDisplay } from './StreakDisplay';
 import { AchievementsPanel } from './AchievementsPanel';
 import { AchievementNotification } from './AchievementNotification';
 import { Achievement } from '@/lib/achievements';
+import { useFocusStore } from '@/lib/store';
 
 interface FocusAppProps {
   userId: string;
 }
+
+const MODE_DURATIONS = {
+  pomodoro: 25 * 60,
+  'deep-work': 90 * 60,
+  custom: 45 * 60,
+};
 
 export function FocusApp({ userId }: FocusAppProps) {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
+  const { mode } = useFocusStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +57,23 @@ export function FocusApp({ userId }: FocusAppProps) {
     return () => clearInterval(interval);
   }, [userId]);
 
+  const handleTimerComplete = async () => {
+    // Save session to database
+    try {
+      await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          mode,
+          duration: MODE_DURATIONS[mode],
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving session:', error);
+    }
+  };
+
   return (
     <>
       <AchievementNotification
@@ -56,12 +81,16 @@ export function FocusApp({ userId }: FocusAppProps) {
         onClose={() => setNewAchievement(null)}
       />
 
-      <div className="flex flex-col items-center gap-12">
+      <div className="flex flex-col items-center gap-16">
         {/* Mode Selection */}
-        <ModeSelector />
+        <PremiumModeSelector />
 
         {/* Timer */}
-        <FocusTimer userId={userId} />
+        <PremiumTimer
+          initialTime={MODE_DURATIONS[mode]}
+          mode={mode}
+          onComplete={handleTimerComplete}
+        />
 
         {/* Music Player */}
         <MusicPlayer />
