@@ -22,6 +22,8 @@ export function FocusTimer({ userId }: FocusTimerProps) {
     setPomodoroRound,
     setIsBreak,
     setTotalTime,
+    setMusicPlaying,
+    setMusicType,
   } = useFocusStore();
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,6 +63,9 @@ export function FocusTimer({ userId }: FocusTimerProps) {
   };
 
   const handleTimerComplete = async () => {
+    // Stop music when timer completes
+    setMusicPlaying(false);
+    
     // Save the completed session (only for work sessions, not breaks)
     if (!isBreak) {
       const completedDuration = totalTime;
@@ -91,13 +96,17 @@ export function FocusTimer({ userId }: FocusTimerProps) {
         sessionStartTimeRef.current = Date.now();
       }
       setState('running');
+      setMusicType('binaural');
+      setMusicPlaying(true);
     } else if (state === 'running') {
       setState('paused');
+      setMusicPlaying(false);
     }
   };
 
   const handleReset = () => {
     setState('idle');
+    setMusicPlaying(false);
     if (mode === 'pomodoro') {
       setTimeRemaining(25 * 60);
       setTotalTime(25 * 60);

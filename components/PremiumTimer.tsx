@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, Check } from 'lucide-react';
+import { useFocusStore } from '@/lib/store';
 
 interface PremiumTimerProps {
   initialTime: number; // in seconds
@@ -14,6 +15,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [isRunning, setIsRunning] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const { setMusicPlaying, setMusicType } = useFocusStore();
 
   const progress = ((initialTime - timeLeft) / initialTime) * 100;
   const minutes = Math.floor(timeLeft / 60);
@@ -27,6 +29,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
         if (prev <= 1) {
           setIsRunning(false);
           setIsCompleted(true);
+          setMusicPlaying(false);
           onComplete?.();
           return 0;
         }
@@ -35,12 +38,23 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft, onComplete]);
+  }, [isRunning, timeLeft, onComplete, setMusicPlaying]);
+
+  // Auto-control music based on timer state
+  useEffect(() => {
+    if (isRunning) {
+      setMusicType('binaural');
+      setMusicPlaying(true);
+    } else if (!isCompleted) {
+      setMusicPlaying(false);
+    }
+  }, [isRunning, isCompleted, setMusicPlaying, setMusicType]);
 
   const handleReset = () => {
     setTimeLeft(initialTime);
     setIsRunning(false);
     setIsCompleted(false);
+    setMusicPlaying(false);
   };
 
   const getModeColor = () => {

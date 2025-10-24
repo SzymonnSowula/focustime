@@ -41,7 +41,7 @@ export const useFocusStore = create<FocusStore>((set) => ({
   pomodoroRound: 1,
   isBreak: false,
   musicPlaying: false,
-  musicType: 'lofi',
+  musicType: 'binaural',
   volume: 0.5,
   
   // Actions

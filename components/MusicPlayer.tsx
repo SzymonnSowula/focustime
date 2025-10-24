@@ -7,9 +7,9 @@ import { motion } from 'framer-motion';
 import { audioGenerator } from '@/lib/audioGenerator';
 
 const musicTypes = [
-  { id: 'lofi', name: 'Lo-Fi', color: 'from-blue-500 to-cyan-500', icon: '🎵' },
+  // { id: 'lofi', name: 'Lo-Fi', color: 'from-blue-500 to-cyan-500', icon: '🎵' },
   { id: 'binaural', name: 'Binaural', color: 'from-purple-500 to-pink-500', icon: '🧠' },
-  { id: 'nature', name: 'Nature', color: 'from-green-500 to-emerald-500', icon: '🌿' },
+  // { id: 'nature', name: 'Nature', color: 'from-green-500 to-emerald-500', icon: '🌿' },
   { id: 'none', name: 'None', color: 'from-gray-600 to-gray-700', icon: '🔇' },
 ] as const;
 
@@ -37,7 +37,7 @@ export function MusicPlayer() {
 
   const toggleMusic = () => {
     if (musicType === 'none') {
-      setMusicType('lofi');
+      setMusicType('binaural');
       setMusicPlaying(true);
     } else {
       setMusicPlaying(!musicPlaying);
@@ -76,7 +76,7 @@ export function MusicPlayer() {
       </div>
 
       {/* Music Type Selection */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-3 mb-6">
         {musicTypes.map((type) => (
           <motion.button
             key={type.id}
