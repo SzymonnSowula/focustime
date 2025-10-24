@@ -45,10 +45,10 @@ export function StatsPanel({ userId }: StatsPanelProps) {
         <h2 className="text-2xl font-bold text-white mb-6">Your Progress</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 animate-pulse">
+            <div key={i} className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 animate-pulse flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-white/10 rounded-xl mb-4" />
-              <div className="h-8 bg-white/10 rounded mb-2" />
-              <div className="h-4 bg-white/10 rounded w-2/3" />
+              <div className="h-8 bg-white/10 rounded mb-2 w-16" />
+              <div className="h-4 bg-white/10 rounded w-20" />
             </div>
           ))}
         </div>
@@ -100,7 +100,7 @@ export function StatsPanel({ userId }: StatsPanelProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 hover:border-white/20 transition-colors"
+              className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 hover:border-white/20 transition-colors flex flex-col items-center text-center"
             >
               <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${stat.color} mb-4`}>
                 <Icon className="w-5 h-5 text-white" />

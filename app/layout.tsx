@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Whop App",
-	description: "My Whop App",
+	title: "FocusTime - Boost Your Productivity",
+	description: "Focus timer app with Pomodoro, Deep Work, and custom timers. Track your progress and build focus streaks.",
+	icons: {
+		icon: "/focustime.jpg",
+	},
 };
 
 export default function RootLayout({

@@ -11,13 +11,14 @@ interface CustomTimerModalProps {
 }
 
 export function CustomTimerModal({ isOpen, onClose }: CustomTimerModalProps) {
-  const { setTimeRemaining, setTotalTime, setState } = useFocusStore();
-  const [hours, setHours] = useState(1);
+  const { setTimeRemaining, setTotalTime, setState, setMode } = useFocusStore();
+  const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
 
   const handleSetTimer = () => {
     const totalSeconds = hours * 3600 + minutes * 60;
     if (totalSeconds > 0) {
+      setMode('custom');
       setTimeRemaining(totalSeconds);
       setTotalTime(totalSeconds);
       setState('idle');

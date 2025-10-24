@@ -105,6 +105,9 @@ export function FocusTimer({ userId }: FocusTimerProps) {
     } else if (mode === 'deep-work') {
       setTimeRemaining(90 * 60);
       setTotalTime(90 * 60);
+    } else if (mode === 'custom') {
+      // For custom mode, reset to the totalTime that was set
+      setTimeRemaining(totalTime);
     }
   };
 
