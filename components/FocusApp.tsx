@@ -8,7 +8,7 @@ import { StatsPanel } from './StatsPanel';
 import { StreakDisplay } from './StreakDisplay';
 import { AchievementsPanel } from './AchievementsPanel';
 import { AchievementNotification } from './AchievementNotification';
-import { Achievement } from '@/lib/achievements';
+import { Achievement, achievements } from '@/lib/achievements';
 import { useFocusStore } from '@/lib/store';
 
 interface FocusAppProps {
@@ -31,16 +31,24 @@ export function FocusApp({ userId }: FocusAppProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch stats
-        const statsRes = await fetch(`/api/stats?userId=${userId}`);
+        // Fetch stats (userId verified from Whop token)
+        const statsRes = await fetch('/api/stats');
+        if (statsRes.status === 401) {
+          console.error('Unauthorized - Whop token invalid');
+          return;
+        }
         const statsData = await statsRes.json();
         if (statsData.success) {
           setStreak(statsData.data.streakDays || 0);
           setBestStreak(statsData.data.bestStreak || 0);
         }
 
-        // Fetch achievements
-        const achievementsRes = await fetch(`/api/achievements?userId=${userId}`);
+        // Fetch achievements (userId verified from Whop token)
+        const achievementsRes = await fetch('/api/achievements');
+        if (achievementsRes.status === 401) {
+          console.error('Unauthorized - Whop token invalid');
+          return;
+        }
         const achievementsData = await achievementsRes.json();
         if (achievementsData.success) {
           setUnlockedAchievements(achievementsData.data.unlocked || []);
@@ -64,11 +72,42 @@ export function FocusApp({ userId }: FocusAppProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId,
           mode,
           duration: MODE_DURATIONS[mode],
         }),
       });
+
+      // Check for new achievements after session completion
+      const achievementsRes = await fetch('/api/achievements');
+      const achievementsData = await achievementsRes.json();
+      
+      if (achievementsData.success) {
+        const newUnlocked = achievementsData.data.unlocked || [];
+        
+        // Find newly unlocked achievements
+        const newAchievements = newUnlocked.filter(
+          (id: string) => !unlockedAchievements.includes(id)
+        );
+        
+        // Update unlocked achievements list
+        setUnlockedAchievements(newUnlocked);
+        
+        // Show notification for the first new achievement
+        if (newAchievements.length > 0) {
+          const achievement = achievements.find(a => a.id === newAchievements[0]);
+          if (achievement) {
+            setNewAchievement(achievement);
+          }
+        }
+      }
+
+      // Refresh stats
+      const statsRes = await fetch('/api/stats');
+      const statsData = await statsRes.json();
+      if (statsData.success) {
+        setStreak(statsData.data.streakDays || 0);
+        setBestStreak(statsData.data.bestStreak || 0);
+      }
     } catch (error) {
       console.error('Error saving session:', error);
     }
@@ -99,7 +138,7 @@ export function FocusApp({ userId }: FocusAppProps) {
         <StreakDisplay streak={streak} bestStreak={bestStreak} />
 
         {/* Stats */}
-        <StatsPanel userId={userId} />
+        <StatsPanel />
 
         {/* Achievements */}
         <AchievementsPanel unlockedAchievements={unlockedAchievements} />

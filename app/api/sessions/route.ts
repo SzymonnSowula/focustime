@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyWhopUser } from '@/lib/auth';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,14 +15,28 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, mode, duration } = await request.json();
+    // Verify Whop user authentication
+    let authenticatedUserId: string;
+    try {
+      authenticatedUserId = await verifyWhopUser();
+    } catch (authError: any) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: authError.statusCode || 401 }
+      );
+    }
+    
+    const { mode, duration } = await request.json();
 
-    if (!userId || !mode || !duration) {
+    if (!mode || !duration) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
+    
+    // Use authenticated userId instead of client-provided one
+    const userId = authenticatedUserId;
 
     // First, ensure user exists in user_stats table
     const { data: existingUser } = await supabase
@@ -73,13 +88,14 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-
-    if (!userId) {
+    // Verify Whop user authentication
+    let userId: string;
+    try {
+      userId = await verifyWhopUser();
+    } catch (authError: any) {
       return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
+        { error: 'Unauthorized' },
+        { status: authError.statusCode || 401 }
       );
     }
 

@@ -5,7 +5,7 @@ import { TrendingUp, Clock, Flame, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface StatsPanelProps {
-  userId: string;
+  // userId is now verified from Whop token in API
 }
 
 interface UserStats {
@@ -17,14 +17,14 @@ interface UserStats {
   focusTimeThisWeek: number;
 }
 
-export function StatsPanel({ userId }: StatsPanelProps) {
+export function StatsPanel({}: StatsPanelProps) {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch(`/api/stats?userId=${userId}`);
+        const response = await fetch('/api/stats');
         const data = await response.json();
         if (data.success) {
           setStats(data.data);
@@ -37,7 +37,7 @@ export function StatsPanel({ userId }: StatsPanelProps) {
     };
 
     fetchStats();
-  }, [userId]);
+  }, []);
 
   if (loading) {
     return (

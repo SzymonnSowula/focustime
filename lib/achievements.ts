@@ -156,11 +156,20 @@ export const achievements: Achievement[] = [
   },
 ];
 
-export function checkAchievements(stats: {
-  totalSessions: number;
-  totalFocusTime: number;
-  streakDays: number;
-}): Achievement[] {
+export function checkAchievements(
+  stats: {
+    totalSessions: number;
+    totalFocusTime: number;
+    streakDays: number;
+  },
+  sessionData?: {
+    mode?: string;
+    completedAt?: Date;
+    pomodoroCount?: number;
+    deepWorkCount?: number;
+    weekendSessions?: { saturday: boolean; sunday: boolean };
+  }
+): Achievement[] {
   const unlocked: Achievement[] = [];
 
   achievements.forEach(achievement => {
@@ -178,6 +187,34 @@ export function checkAchievements(stats: {
         break;
       case 'streak':
         shouldUnlock = stats.streakDays >= achievement.requirement;
+        break;
+      case 'special':
+        // Handle special achievements
+        if (sessionData) {
+          switch (achievement.id) {
+            case 'early_bird':
+              if (sessionData.completedAt) {
+                const hour = sessionData.completedAt.getHours();
+                shouldUnlock = hour < 8;
+              }
+              break;
+            case 'night_owl':
+              if (sessionData.completedAt) {
+                const hour = sessionData.completedAt.getHours();
+                shouldUnlock = hour >= 22;
+              }
+              break;
+            case 'deep_work_master':
+              shouldUnlock = (sessionData.deepWorkCount || 0) >= achievement.requirement;
+              break;
+            case 'pomodoro_pro':
+              shouldUnlock = (sessionData.pomodoroCount || 0) >= achievement.requirement;
+              break;
+            case 'weekend_warrior':
+              shouldUnlock = sessionData.weekendSessions?.saturday && sessionData.weekendSessions?.sunday || false;
+              break;
+          }
+        }
         break;
     }
 
