@@ -21,6 +21,13 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
+  // Reset timer when initialTime changes (e.g., custom time set)
+  useEffect(() => {
+    setTimeLeft(initialTime);
+    setIsRunning(false);
+    setIsCompleted(false);
+  }, [initialTime]);
+
   useEffect(() => {
     if (!isRunning || timeLeft === 0) return;
 

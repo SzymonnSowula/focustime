@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Zap, Settings2 } from 'lucide-react';
 import { useFocusStore } from '@/lib/store';
+import { CustomTimerModal } from './CustomTimerModal';
 
 const modes = [
   {
@@ -33,9 +35,20 @@ const modes = [
 
 export function PremiumModeSelector() {
   const { mode, setMode } = useFocusStore();
+  const [showCustomModal, setShowCustomModal] = useState(false);
+
+  const handleModeClick = (modeId: 'pomodoro' | 'deep-work' | 'custom') => {
+    if (modeId === 'custom') {
+      setShowCustomModal(true);
+    } else {
+      setMode(modeId);
+    }
+  };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <>
+      <CustomTimerModal isOpen={showCustomModal} onClose={() => setShowCustomModal(false)} />
+      <div className="w-full max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-3xl font-semibold text-[var(--neutral-50)] mb-2 tracking-tight">
@@ -60,7 +73,7 @@ export function PremiumModeSelector() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02, y: -4 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setMode(modeOption.id)}
+              onClick={() => handleModeClick(modeOption.id)}
               className="relative group"
             >
               {/* Card Container */}
@@ -169,6 +182,7 @@ export function PremiumModeSelector() {
       >
         Tap to switch modes • Your progress will be saved
       </motion.p>
-    </div>
+      </div>
+    </>
   );
 }

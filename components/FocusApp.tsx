@@ -18,7 +18,6 @@ interface FocusAppProps {
 const MODE_DURATIONS = {
   pomodoro: 25 * 60,
   'deep-work': 90 * 60,
-  custom: 45 * 60,
 };
 
 export function FocusApp({ userId }: FocusAppProps) {
@@ -26,7 +25,7 @@ export function FocusApp({ userId }: FocusAppProps) {
   const [bestStreak, setBestStreak] = useState(0);
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
-  const { mode } = useFocusStore();
+  const { mode, totalTime } = useFocusStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +72,7 @@ export function FocusApp({ userId }: FocusAppProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode,
-          duration: MODE_DURATIONS[mode],
+          duration: mode === 'custom' ? totalTime : MODE_DURATIONS[mode],
         }),
       });
 
@@ -126,7 +125,7 @@ export function FocusApp({ userId }: FocusAppProps) {
 
         {/* Timer */}
         <PremiumTimer
-          initialTime={MODE_DURATIONS[mode]}
+          initialTime={mode === 'custom' ? totalTime : MODE_DURATIONS[mode]}
           mode={mode}
           onComplete={handleTimerComplete}
         />
