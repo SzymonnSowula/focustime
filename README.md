@@ -14,10 +14,10 @@ A beautiful, modern focus timer app built for Whop communities. Help your member
 - **Custom Timer**: Set your own duration from 1 minute to 12 hours
 
 ### 🎵 Background Music
-- **Lo-Fi Beats**: Chill background music for concentration
-- **Binaural Sounds**: Brain-enhancing frequencies
-- **Nature Ambience**: Calming natural sounds
+- **Binaural Sounds**: AI-generated brain-enhancing frequencies that automatically play during focus sessions
+- **Auto-sync with Timer**: Music starts when you begin a session and stops when you pause or complete
 - **Volume Control**: Adjust music to your preference
+- **Simple Toggle**: Switch between Binaural or None
 
 ### 📊 Progress Tracking
 - Total focus sessions completed
@@ -119,10 +119,10 @@ The app uses a premium dark theme with vibrant gradient accents:
 - **Primary Gradient**: `#8B5CF6` (Purple) → `#EC4899` (Pink)
 - **Background**: `#030712`, `#111827`, `#1F2937` (Dark grays)
 - **Accent Colors**:
-  - Blue-Cyan: Lo-Fi music
-  - Purple-Pink: Binaural sounds
-  - Green-Emerald: Nature sounds
-  - Orange-Red: Streak indicators
+  - Purple-Pink: Primary gradient (timer, music, UI elements)
+  - Blue-Cyan: Stats and progress indicators
+  - Orange-Red: Pomodoro mode and streak indicators
+  - Green: Custom timer mode
 
 ## 🛠️ Tech Stack
 
@@ -157,21 +157,15 @@ After deployment, update your Whop app settings:
 - [Whop Apps Documentation](https://docs.whop.com/apps)
 - [Supabase Documentation](https://supabase.com/docs)
 
-## 🎵 Adding Music Files
+## 🎵 Music System
 
-To add actual music files:
+The app uses AI-generated binaural beats that are procedurally created in real-time using the Web Audio API. No external music files are needed - the audio is synthesized on-the-fly for optimal focus enhancement.
 
-1. Create a `public/music/` directory
-2. Add your audio files:
-   - `lofi.mp3` - Lo-Fi background music
-   - `binaural.mp3` - Binaural beats
-   - `nature.mp3` - Nature sounds
-3. Update `MusicPlayer.tsx` to load these files
-
-Or use streaming URLs from services like:
-- YouTube Audio Library
-- Free Music Archive
-- Incompetech
+**Features:**
+- Real-time audio generation using `audioGenerator.ts`
+- Automatic synchronization with timer state
+- Adjustable volume control
+- No external dependencies or music files required
 
 ## 🤝 Contributing
 
