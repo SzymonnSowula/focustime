@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
 import { FocusApp } from "@/components/FocusApp";
+import { CommunityDashboard } from "@/components/CommunityDashboard";
 import { getRandomQuote } from "@/lib/achievements";
 import { Suspense } from "react";
 import { LoadingScreen } from "@/components/LoadingScreen";
@@ -79,7 +80,19 @@ export default async function ExperiencePage({
 				{/* Main Content */}
 				<main className="max-w-7xl mx-auto px-6 sm:px-8 py-16">
 					<Suspense fallback={<LoadingScreen />}>
-						<FocusApp userId={userId} />
+						{/* Community Dashboard - NEW! */}
+						<div className="mb-16">
+							<CommunityDashboard companyId={experienceId} />
+						</div>
+
+						{/* Personal Focus App */}
+						<div className="border-t border-white/5 pt-16">
+							<div className="text-center mb-12">
+								<h2 className="text-3xl font-bold text-white mb-2">Your Personal Focus</h2>
+								<p className="text-[var(--neutral-400)]">Track your individual progress and achievements</p>
+							</div>
+							<FocusApp userId={userId} />
+						</div>
 					</Suspense>
 				</main>
 
@@ -87,7 +100,7 @@ export default async function ExperiencePage({
 				<footer className="border-t border-white/5 mt-24">
 					<div className="max-w-7xl mx-auto px-6 sm:px-8 py-8 text-center">
 						<p className="text-xs text-[var(--neutral-500)]">
-							Designed with focus in mind
+							Designed with focus in mind • Powering productive communities
 						</p>
 					</div>
 				</footer>
