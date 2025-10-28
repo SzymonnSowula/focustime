@@ -1,11 +1,11 @@
 import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
+import { Navbar } from "@/components/Navbar";
 import { FocusApp } from "@/components/FocusApp";
 import { CommunityDashboard } from "@/components/CommunityDashboard";
 import { getRandomQuote } from "@/lib/achievements";
 import { Suspense } from "react";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import Image from "next/image";
 
 export default async function ExperiencePage({
 	params,
@@ -17,13 +17,18 @@ export default async function ExperiencePage({
 	const { userId } = await whopsdk.verifyUserToken(await headers());
 
 	// Fetch the neccessary data we want from whop.
-	const [user, access] = await Promise.all([
+	const [user, access, company] = await Promise.all([
 		whopsdk.users.retrieve(userId),
 		whopsdk.users.checkAccess(experienceId, { id: userId }),
+		whopsdk.companies.retrieve(experienceId).catch(() => null),
 	]);
 
 	const displayName = user.name || `@${user.username}`;
 	const motivationalQuote = getRandomQuote();
+
+	// Check if user is creator/admin (you can customize this logic)
+	// For example, check if user owns the company or has admin role
+	const isAdmin = false; // Update with your logic to determine admin status
 
 	return (
 		<div className="min-h-screen relative overflow-hidden">
@@ -36,37 +41,13 @@ export default async function ExperiencePage({
 
 			{/* Content */}
 			<div className="relative z-10">
-				{/* Header - Minimal & Clean */}
-				<header className="border-b border-white/5 backdrop-blur-xl bg-black/20">
-					<div className="max-w-7xl mx-auto px-6 sm:px-8 py-6">
-						<div className="flex justify-between items-center">
-							{/* Logo */}
-							<div className="flex items-center gap-3">
-								<Image
-									src="/focustime.jpg"
-									alt="FocusTime Logo"
-									width={40}
-									height={40}
-									className="rounded-lg"
-								/>
-								<div>
-									<h1 className="text-2xl font-semibold text-[var(--neutral-50)] tracking-tight">
-										FocusTime
-									</h1>
-									<p className="text-xs text-[var(--neutral-400)] mt-0.5">
-										Welcome back, <span className="text-[var(--neutral-300)]">{displayName}</span>
-									</p>
-								</div>
-							</div>
-
-							{/* Status Indicator */}
-							<div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-								<div className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-								<span className="text-xs font-medium text-[var(--neutral-300)]">Active</span>
-							</div>
-						</div>
-					</div>
-				</header>
+				{/* Navbar */}
+				<Navbar
+					displayName={displayName}
+					isAdmin={isAdmin}
+					companyId={company?.id}
+					experienceId={experienceId}
+				/>
 
 				{/* Motivational Quote - Floating Card */}
 				<div className="max-w-3xl mx-auto px-6 sm:px-8 mt-8">
