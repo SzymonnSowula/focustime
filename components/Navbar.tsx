@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useIframeSdk } from '@whop/react/iframe';
 import {
   Menu,
   X,
@@ -47,6 +48,24 @@ export function Navbar({ displayName, isAdmin = false, companyId, experienceId }
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
 
+  const whop = useIframeSdk();
+
+  // Helper to open Whop navigation
+  const handleWhopNav = (url: string, newTab = false) => {
+    if (whop && whop.openExternalUrl) {
+      whop.openExternalUrl({ url, newTab });
+    } else {
+      window.location.href = url;
+    }
+  };
+
+  // Helper to close app (if needed)
+  const handleCloseApp = () => {
+    if (whop && whop.closeApp) {
+      whop.closeApp(null);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 backdrop-blur-xl bg-black/20">
       <nav className="max-w-7xl mx-auto px-6 sm:px-8">
@@ -82,14 +101,14 @@ export function Navbar({ displayName, isAdmin = false, companyId, experienceId }
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Link
+                <button
                   key={item.name}
-                  href={item.href}
+                  onClick={() => handleWhopNav(item.href)}
                   className="px-4 py-2 rounded-xl text-sm font-medium text-[var(--neutral-300)] hover:text-white hover:bg-white/5 transition-all flex items-center gap-2"
                 >
                   <Icon className="w-4 h-4" />
                   {item.name}
-                </Link>
+                </button>
               );
             })}
           </div>
@@ -122,58 +141,53 @@ export function Navbar({ displayName, isAdmin = false, companyId, experienceId }
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute right-0 mt-2 w-48 backdrop-blur-2xl bg-[var(--glass-bg)] border border-white/10 rounded-xl shadow-2xl overflow-hidden"
                   >
-                    <Link
-                      href={`/experiences/${experienceId}#stats`}
-                      className="block px-4 py-3 text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors"
-                      onClick={() => setShowUserMenu(false)}
+                    <button
+                      className="block w-full px-4 py-3 text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors text-left"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        handleWhopNav(`/experiences/${experienceId}#stats`);
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <TrendingUp className="w-4 h-4" />
                         My Progress
                       </div>
-                    </Link>
+                    </button>
                     
-                    <Link
-                      href={`/experiences/${experienceId}#achievements`}
-                      className="block px-4 py-3 text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors"
-                      onClick={() => setShowUserMenu(false)}
+                    <button
+                      className="block w-full px-4 py-3 text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors text-left"
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        handleWhopNav(`/experiences/${experienceId}#achievements`);
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <Trophy className="w-4 h-4" />
                         Achievements
                       </div>
-                    </Link>
+                    </button>
 
                     {isAdmin && (
                       <>
                         <div className="h-px bg-white/10 my-1" />
-                        <Link
-                          href={`/dashboard/${companyId}`}
-                          className="block px-4 py-3 text-sm text-yellow-400 hover:bg-white/5 transition-colors"
-                          onClick={() => setShowUserMenu(false)}
+                        <button
+                          className="block w-full px-4 py-3 text-sm text-yellow-400 hover:bg-white/5 transition-colors text-left"
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            handleWhopNav(`/dashboard/${companyId}`);
+                          }}
                         >
                           <div className="flex items-center gap-3">
                             <Crown className="w-4 h-4" />
                             Creator Dashboard
                           </div>
-                        </Link>
+                        </button>
                       </>
                     )}
 
                     <div className="h-px bg-white/10 my-1" />
                     
-                    <button
-                      className="w-full px-4 py-3 text-sm text-red-400 hover:bg-white/5 transition-colors text-left"
-                      onClick={() => {
-                        // Add logout logic here
-                        window.location.href = '/';
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <LogOut className="w-4 h-4" />
-                        Sign Out
-                      </div>
-                    </button>
+                    {/* Sign Out button removed for Whop integration */}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -206,15 +220,17 @@ export function Navbar({ displayName, isAdmin = false, companyId, experienceId }
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <Link
+                    <button
                       key={item.name}
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleWhopNav(item.href);
+                      }}
                       className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-[var(--neutral-300)] hover:text-white hover:bg-white/5 transition-all"
                     >
                       <Icon className="w-4 h-4" />
                       {item.name}
-                    </Link>
+                    </button>
                   );
                 })}
 
@@ -235,44 +251,42 @@ export function Navbar({ displayName, isAdmin = false, companyId, experienceId }
                   </div>
 
                   <div className="space-y-1">
-                    <Link
-                      href={`/experiences/${experienceId}#stats`}
-                      onClick={() => setIsOpen(false)}
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleWhopNav(`/experiences/${experienceId}#stats`);
+                      }}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors"
                     >
                       <TrendingUp className="w-4 h-4" />
                       My Progress
-                    </Link>
+                    </button>
                     
-                    <Link
-                      href={`/experiences/${experienceId}#achievements`}
-                      onClick={() => setIsOpen(false)}
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        handleWhopNav(`/experiences/${experienceId}#achievements`);
+                      }}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[var(--neutral-300)] hover:bg-white/5 transition-colors"
                     >
                       <Trophy className="w-4 h-4" />
                       Achievements
-                    </Link>
+                    </button>
 
                     {isAdmin && (
-                      <Link
-                        href={`/dashboard/${companyId}`}
-                        onClick={() => setIsOpen(false)}
+                      <button
+                        onClick={() => {
+                          setIsOpen(false);
+                          handleWhopNav(`/dashboard/${companyId}`);
+                        }}
                         className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-yellow-400 hover:bg-white/5 transition-colors"
                       >
                         <Crown className="w-4 h-4" />
                         Creator Dashboard
-                      </Link>
+                      </button>
                     )}
 
-                    <button
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-white/5 transition-colors text-left"
-                      onClick={() => {
-                        window.location.href = '/';
-                      }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
+                    {/* Sign Out button removed for Whop integration */}
                   </div>
                 </div>
               </div>

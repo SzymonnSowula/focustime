@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useIframeSdk } from '@whop/react/iframe';
 import { motion } from 'framer-motion';
 import { Users, Search, TrendingUp, Clock, Trophy, Filter } from 'lucide-react';
 
@@ -22,6 +23,17 @@ export function MemberManagement({ companyId }: MemberManagementProps) {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'activity' | 'sessions' | 'time'>('activity');
+
+  const whop = useIframeSdk();
+
+  // Helper to open Whop navigation
+  const handleWhopNav = (url: string, newTab = false) => {
+    if (whop && whop.openExternalUrl) {
+      whop.openExternalUrl({ url, newTab });
+    } else {
+      window.location.href = url;
+    }
+  };
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -177,7 +189,8 @@ export function MemberManagement({ companyId }: MemberManagementProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.03 }}
-                className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/5 transition-colors group"
+                className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/5 transition-colors group cursor-pointer"
+                onClick={() => handleWhopNav(`/dashboard/${companyId}/members/${member.userId}`)}
               >
                 {/* Member Info */}
                 <div className="col-span-4 flex items-center gap-3">

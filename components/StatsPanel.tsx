@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useIframeSdk } from '@whop/react/iframe';
 import { TrendingUp, Clock, Flame, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -20,6 +21,17 @@ interface UserStats {
 export function StatsPanel({}: StatsPanelProps) {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const whop = useIframeSdk();
+
+  // Helper to open Whop navigation
+  const handleWhopNav = (url: string, newTab = false) => {
+    if (whop && whop.openExternalUrl) {
+      whop.openExternalUrl({ url, newTab });
+    } else {
+      window.location.href = url;
+    }
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -93,23 +105,28 @@ export function StatsPanel({}: StatsPanelProps) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
-          
           return (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 hover:border-white/20 transition-colors flex flex-col items-center text-center"
+              className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 hover:border-white/20 transition-colors flex flex-col items-center text-center cursor-pointer"
+              onClick={() => {
+                // Example: navigate to stats or achievements page
+                if (stat.label === 'Weekly Goal') {
+                  handleWhopNav('/experiences/me#stats');
+                } else if (stat.label === 'Day Streak') {
+                  handleWhopNav('/experiences/me#achievements');
+                }
+              }}
             >
               <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${stat.color} mb-4`}>
                 <Icon className="w-5 h-5 text-white" />
               </div>
-              
               <div className="text-3xl font-bold text-white mb-1">
                 {stat.value}
               </div>
-              
               <div className="text-sm text-gray-300">
                 {stat.label}
               </div>

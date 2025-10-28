@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useIframeSdk } from '@whop/react/iframe';
 import { motion } from 'framer-motion';
 import { Users, Clock, TrendingUp, Zap, Trophy, Play } from 'lucide-react';
 
@@ -35,6 +36,17 @@ export function CommunityDashboard({ companyId }: CommunityDashboardProps) {
   const [loading, setLoading] = useState(true);
   const [showStartModal, setShowStartModal] = useState(false);
 
+  const whop = useIframeSdk();
+
+  // Helper to open Whop navigation
+  const handleWhopNav = (url: string, newTab = false) => {
+    if (whop && whop.openExternalUrl) {
+      whop.openExternalUrl({ url, newTab });
+    } else {
+      window.location.href = url;
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,24 +78,8 @@ export function CommunityDashboard({ companyId }: CommunityDashboardProps) {
   }, [companyId]);
 
   const handleJoinSession = async (sessionId: string) => {
-    try {
-      const res = await fetch('/api/community/sessions', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, action: 'join' }),
-      });
-
-      if (res.ok) {
-        // Refresh sessions
-        const sessionsRes = await fetch(`/api/community/sessions?companyId=${companyId}`);
-        const sessionsData = await sessionsRes.json();
-        if (sessionsData.success) {
-          setActiveSessions(sessionsData.data);
-        }
-      }
-    } catch (error) {
-      console.error('Error joining session:', error);
-    }
+    // Use Whop navigation to join session page
+    handleWhopNav(`/community/sessions/${sessionId}`);
   };
 
   if (loading) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useIframeSdk } from '@whop/react/iframe';
 import { motion } from 'framer-motion';
 import {
   Users,
@@ -127,6 +128,17 @@ export function AdminStats({ companyId }: AdminStatsProps) {
     },
   ];
 
+  const whop = useIframeSdk();
+
+  // Helper to open Whop navigation
+  const handleWhopNav = (url: string, newTab = false) => {
+    if (whop && whop.openExternalUrl) {
+      whop.openExternalUrl({ url, newTab });
+    } else {
+      window.location.href = url;
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -198,6 +210,7 @@ export function AdminStats({ companyId }: AdminStatsProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="backdrop-blur-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl p-4 text-left hover:border-blue-500/40 transition-all"
+          onClick={() => handleWhopNav(`/dashboard/${companyId}/members`)}
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-blue-500/20">
@@ -214,6 +227,7 @@ export function AdminStats({ companyId }: AdminStatsProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="backdrop-blur-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-4 text-left hover:border-green-500/40 transition-all"
+          onClick={() => handleWhopNav(`/dashboard/${companyId}/sessions`)}
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-green-500/20">
@@ -230,6 +244,7 @@ export function AdminStats({ companyId }: AdminStatsProps) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="backdrop-blur-2xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4 text-left hover:border-purple-500/40 transition-all"
+          onClick={() => handleWhopNav(`/dashboard/${companyId}/export`)}
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-purple-500/20">
