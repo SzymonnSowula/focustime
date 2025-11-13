@@ -81,7 +81,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative backdrop-blur-2xl bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-[32px] p-12 shadow-2xl"
+        className="relative backdrop-blur-2xl bg-gray-a3 border border-gray-a5 rounded-[32px] p-12 shadow-2xl"
       >
         {/* Ambient Glow */}
         <div className={`absolute inset-0 rounded-[32px] bg-gradient-to-br ${getModeColor()} opacity-10 blur-3xl`} />
@@ -95,7 +95,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
               cy="100"
               r="90"
               fill="none"
-              stroke="rgba(255, 255, 255, 0.05)"
+              stroke="var(--gray-a3)"
               strokeWidth="8"
             />
             
@@ -153,7 +153,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
                   <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${getModeColor()} flex items-center justify-center mb-4`}>
                     <Check className="w-10 h-10 text-white" />
                   </div>
-                  <p className="text-2xl font-semibold text-[var(--neutral-100)]">Complete!</p>
+                  <p className="text-2xl font-semibold text-gray-12">Complete!</p>
                 </motion.div>
               ) : (
                 <motion.div
@@ -163,12 +163,12 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
                   exit={{ opacity: 0 }}
                   className="text-center"
                 >
-                  <div className="text-7xl font-light tracking-tight text-[var(--neutral-50)] tabular-nums">
+                  <div className="text-7xl font-light tracking-tight text-gray-12 tabular-nums">
                     {String(minutes).padStart(2, '0')}
-                    <span className="text-[var(--neutral-400)] mx-1">:</span>
+                    <span className="text-gray-11 mx-1">:</span>
                     {String(seconds).padStart(2, '0')}
                   </div>
-                  <p className="text-sm font-medium text-[var(--neutral-400)] mt-2 uppercase tracking-wider">
+                  <p className="text-sm font-medium text-gray-11 mt-2 uppercase tracking-wider">
                     {mode.replace('-', ' ')}
                   </p>
                 </motion.div>
@@ -184,9 +184,9 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleReset}
-            className="w-14 h-14 rounded-full backdrop-blur-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all"
+            className="w-14 h-14 rounded-full backdrop-blur-xl bg-gray-a3 border border-gray-a5 flex items-center justify-center hover:bg-gray-a4 transition-all"
           >
-            <RotateCcw className="w-5 h-5 text-[var(--neutral-300)]" />
+            <RotateCcw className="w-5 h-5 text-gray-12" />
           </motion.button>
 
           {/* Play/Pause Button - Hero */}
@@ -223,7 +223,7 @@ export function PremiumTimer({ initialTime, onComplete, mode }: PremiumTimerProp
 
         {/* Progress Percentage */}
         <div className="mt-6 text-center">
-          <p className="text-sm font-medium text-[var(--neutral-500)]">
+          <p className="text-sm font-medium text-gray-10">
             {Math.round(progress)}% Complete
           </p>
         </div>

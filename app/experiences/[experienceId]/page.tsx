@@ -72,7 +72,7 @@ export default async function ExperiencePage({
 								<h2 className="text-3xl font-bold text-white mb-2">Your Personal Focus</h2>
 								<p className="text-[var(--neutral-400)]">Track your individual progress and achievements</p>
 							</div>
-							<FocusApp userId={userId} />
+							<FocusApp userId={userId} experienceId={experienceId} />
 						</div>
 					</Suspense>
 				</main>

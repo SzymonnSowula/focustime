@@ -161,12 +161,12 @@ export function checkAchievements(
     totalSessions: number;
     totalFocusTime: number;
     streakDays: number;
+    pomodoroCount: number;
+    deepWorkCount: number;
   },
   sessionData?: {
     mode?: string;
     completedAt?: Date;
-    pomodoroCount?: number;
-    deepWorkCount?: number;
     weekendSessions?: { saturday: boolean; sunday: boolean };
   }
 ): Achievement[] {
@@ -190,30 +190,28 @@ export function checkAchievements(
         break;
       case 'special':
         // Handle special achievements
-        if (sessionData) {
-          switch (achievement.id) {
-            case 'early_bird':
-              if (sessionData.completedAt) {
-                const hour = sessionData.completedAt.getHours();
-                shouldUnlock = hour < 8;
-              }
-              break;
-            case 'night_owl':
-              if (sessionData.completedAt) {
-                const hour = sessionData.completedAt.getHours();
-                shouldUnlock = hour >= 22;
-              }
-              break;
-            case 'deep_work_master':
-              shouldUnlock = (sessionData.deepWorkCount || 0) >= achievement.requirement;
-              break;
-            case 'pomodoro_pro':
-              shouldUnlock = (sessionData.pomodoroCount || 0) >= achievement.requirement;
-              break;
-            case 'weekend_warrior':
-              shouldUnlock = sessionData.weekendSessions?.saturday && sessionData.weekendSessions?.sunday || false;
-              break;
-          }
+        switch (achievement.id) {
+          case 'deep_work_master':
+            shouldUnlock = (stats.deepWorkCount || 0) >= achievement.requirement;
+            break;
+          case 'pomodoro_pro':
+            shouldUnlock = (stats.pomodoroCount || 0) >= achievement.requirement;
+            break;
+          case 'early_bird':
+            if (sessionData?.completedAt) {
+              const hour = sessionData.completedAt.getHours();
+              shouldUnlock = hour < 8;
+            }
+            break;
+          case 'night_owl':
+            if (sessionData?.completedAt) {
+              const hour = sessionData.completedAt.getHours();
+              shouldUnlock = hour >= 22;
+            }
+            break;
+          case 'weekend_warrior':
+            shouldUnlock = sessionData?.weekendSessions?.saturday && sessionData.weekendSessions?.sunday || false;
+            break;
         }
         break;
     }

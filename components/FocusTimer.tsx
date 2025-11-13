@@ -139,95 +139,94 @@ export function FocusTimer({ userId }: FocusTimerProps) {
       <div className="relative">
         {/* Progress Ring */}
         <svg className="w-80 h-80 transform -rotate-90">
-          <circle
-            cx="160"
-            cy="160"
-            r="140"
-            stroke="currentColor"
-            strokeWidth="8"
-            fill="none"
-            className="text-gray-800/30"
-          />
-          <motion.circle
-            cx="160"
-            cy="160"
-            r="140"
-            stroke="url(#gradient)"
-            strokeWidth="8"
-            fill="none"
-            strokeLinecap="round"
-            initial={{ strokeDasharray: '0 880' }}
-            animate={{ 
-              strokeDasharray: `${(progress / 100) * 880} 880`,
-            }}
-            transition={{ duration: 0.5 }}
-          />
-          <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#8B5CF6" />
-              <stop offset="100%" stopColor="#EC4899" />
-            </linearGradient>
-          </defs>
-        </svg>
-
-        {/* Time Display */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <motion.div
-            key={timeRemaining}
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="text-7xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
-          >
-            {formatTime(timeRemaining)}
-          </motion.div>
-          <div className="text-sm text-gray-400 mt-2">
-            {mode === 'pomodoro' && (
-              <span>
-                {isBreak ? 'Break Time' : `Focus Session ${pomodoroRound}`}
-              </span>
-            )}
-            {mode === 'deep-work' && <span>Deep Work</span>}
-            {mode === 'custom' && <span>Custom Timer</span>}
-          </div>
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div className="flex gap-4">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handlePlayPause}
-          className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-shadow"
-        >
-          {state === 'running' ? (
-            <Pause className="w-6 h-6" />
-          ) : (
-            <Play className="w-6 h-6 ml-1" />
-          )}
-        </motion.button>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleReset}
-          className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
-        >
-          <RotateCcw className="w-5 h-5" />
-        </motion.button>
-      </div>
-
-      {/* Completion Message */}
-      {state === 'completed' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 text-green-400"
-        >
-          <Check className="w-5 h-5" />
-          <span className="font-medium">Session Complete!</span>
-        </motion.div>
-      )}
-    </div>
+                    <circle
+                      cx="160"
+                      cy="160"
+                      r="140"
+                      stroke="currentColor"
+                      strokeWidth="8"
+                      fill="none"
+                      className="text-slate-a5"
+                    />
+                    <motion.circle
+                      cx="160"
+                      cy="160"
+                      r="140"
+                      stroke="url(#gradient)"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeLinecap="round"
+                      initial={{ strokeDasharray: '0 880' }}
+                      animate={{
+                        strokeDasharray: `${(progress / 100) * 880} 880`,
+                      }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#8B5CF6" />
+                        <stop offset="100%" stopColor="#EC4899" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+          
+                  {/* Time Display */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <motion.div
+                      key={timeRemaining}
+                      initial={{ scale: 1.1, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="text-7xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+                    >
+                      {formatTime(timeRemaining)}
+                    </motion.div>
+                    <div className="text-sm text-slate-11 mt-2">
+                      {mode === 'pomodoro' && (
+                        <span>
+                          {isBreak ? 'Break Time' : `Focus Session ${pomodoroRound}`}
+                        </span>
+                      )}
+                      {mode === 'deep-work' && <span>Deep Work</span>}
+                      {mode === 'custom' && <span>Custom Timer</span>}
+                    </div>
+                  </div>
+                </div>
+          
+                {/* Controls */}
+                <div className="flex gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePlayPause}
+                    className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-shadow"
+                  >
+                    {state === 'running' ? (
+                      <Pause className="w-6 h-6" />
+                    ) : (
+                      <Play className="w-6 h-6 ml-1" />
+                    )}
+                  </motion.button>
+          
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleReset}
+                    className="w-16 h-16 rounded-full bg-slate-3 flex items-center justify-center text-slate-12 hover:text-white hover:bg-slate-4 transition-colors"
+                  >
+                    <RotateCcw className="w-5 h-5" />
+                  </motion.button>
+                </div>
+          
+                {/* Completion Message */}
+                {state === 'completed' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center gap-2 text-grass-9"
+                  >
+                    <Check className="w-5 h-5" />
+                    <span className="font-medium">Session Complete!</span>
+                  </motion.div>
+                )}    </div>
   );
 }

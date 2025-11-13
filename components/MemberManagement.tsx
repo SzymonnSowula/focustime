@@ -11,6 +11,7 @@ interface MemberManagementProps {
 
 interface Member {
   userId: string;
+  username: string;
   totalSessions: number;
   totalFocusTime: number;
   streakDays: number;
@@ -65,8 +66,10 @@ export function MemberManagement({ companyId }: MemberManagementProps) {
     }
   });
 
-  const filteredMembers = sortedMembers.filter((member) =>
-    member.userId.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredMembers = sortedMembers.filter(
+    (member) =>
+      member.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.userId.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatLastActive = (dateString: string) => {
@@ -195,12 +198,10 @@ export function MemberManagement({ companyId }: MemberManagementProps) {
                 {/* Member Info */}
                 <div className="col-span-4 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">
-                    {member.userId.charAt(0).toUpperCase()}
+                    {member.username.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <div className="font-medium text-white">
-                      User {member.userId.slice(0, 8)}
-                    </div>
+                    <div className="font-medium text-gray-12">{member.username}</div>
                     <div className="text-xs text-[var(--neutral-500)]">
                       Member since {new Date(member.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </div>

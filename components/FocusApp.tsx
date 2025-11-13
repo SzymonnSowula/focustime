@@ -13,6 +13,7 @@ import { useFocusStore } from '@/lib/store';
 
 interface FocusAppProps {
   userId: string;
+  experienceId: string;
 }
 
 const MODE_DURATIONS = {
@@ -20,7 +21,7 @@ const MODE_DURATIONS = {
   'deep-work': 90 * 60,
 };
 
-export function FocusApp({ userId }: FocusAppProps) {
+export function FocusApp({ userId, experienceId }: FocusAppProps) {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
@@ -28,10 +29,11 @@ export function FocusApp({ userId }: FocusAppProps) {
   const { mode, totalTime } = useFocusStore();
 
   useEffect(() => {
+    if (!experienceId) return;
     const fetchData = async () => {
       try {
         // Fetch stats (userId verified from Whop token)
-        const statsRes = await fetch('/api/stats');
+        const statsRes = await fetch(`/api/stats?companyId=${experienceId}`);
         if (statsRes.status === 401) {
           console.error('Unauthorized - Whop token invalid');
           return;
@@ -43,7 +45,7 @@ export function FocusApp({ userId }: FocusAppProps) {
         }
 
         // Fetch achievements (userId verified from Whop token)
-        const achievementsRes = await fetch('/api/achievements');
+        const achievementsRes = await fetch(`/api/achievements?companyId=${experienceId}`);
         if (achievementsRes.status === 401) {
           console.error('Unauthorized - Whop token invalid');
           return;
@@ -62,46 +64,34 @@ export function FocusApp({ userId }: FocusAppProps) {
     // Refresh data every 30 seconds
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, [userId]);
+  }, [userId, experienceId]);
 
   const handleTimerComplete = async () => {
     // Save session to database
     try {
-      await fetch('/api/sessions', {
+      const sessionRes = await fetch('/api/sessions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mode,
           duration: mode === 'custom' ? totalTime : MODE_DURATIONS[mode],
+          companyId: experienceId,
         }),
       });
 
-      // Check for new achievements after session completion
-      const achievementsRes = await fetch('/api/achievements');
-      const achievementsData = await achievementsRes.json();
-      
-      if (achievementsData.success) {
-        const newUnlocked = achievementsData.data.unlocked || [];
-        
-        // Find newly unlocked achievements
-        const newAchievements = newUnlocked.filter(
-          (id: string) => !unlockedAchievements.includes(id)
-        );
-        
-        // Update unlocked achievements list
-        setUnlockedAchievements(newUnlocked);
-        
-        // Show notification for the first new achievement
-        if (newAchievements.length > 0) {
-          const achievement = achievements.find(a => a.id === newAchievements[0]);
-          if (achievement) {
-            setNewAchievement(achievement);
-          }
+      const sessionData = await sessionRes.json();
+
+      if (sessionData.success && sessionData.newAchievements && sessionData.newAchievements.length > 0) {
+        const firstNewAchievement = achievements.find(a => a.id === sessionData.newAchievements[0].id);
+        if (firstNewAchievement) {
+          setNewAchievement(firstNewAchievement);
         }
+        // Zaktualizuj lokalny stan, aby uniknąć ponownego pokazywania
+        setUnlockedAchievements(prev => [...prev, ...sessionData.newAchievements.map((a: Achievement) => a.id)]);
       }
 
       // Refresh stats
-      const statsRes = await fetch('/api/stats');
+      const statsRes = await fetch(`/api/stats?companyId=${experienceId}`);
       const statsData = await statsRes.json();
       if (statsData.success) {
         setStreak(statsData.data.streakDays || 0);

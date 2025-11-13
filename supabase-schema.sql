@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS user_stats (
   total_focus_time INTEGER DEFAULT 0, -- in seconds
   streak_days INTEGER DEFAULT 0,
   last_session_date DATE,
+  pomodoro_count INTEGER DEFAULT 0,
+  deep_work_count INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -27,12 +29,14 @@ CREATE OR REPLACE FUNCTION update_user_stats()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Insert or update user stats
-  INSERT INTO user_stats (user_id, total_sessions, total_focus_time, last_session_date, updated_at)
+  INSERT INTO user_stats (user_id, total_sessions, total_focus_time, last_session_date, pomodoro_count, deep_work_count, updated_at)
   VALUES (
     NEW.user_id,
     1,
     NEW.duration,
     CURRENT_DATE,
+    (CASE WHEN NEW.mode = 'pomodoro' THEN 1 ELSE 0 END),
+    (CASE WHEN NEW.mode = 'deep-work' THEN 1 ELSE 0 END),
     NOW()
   )
   ON CONFLICT (user_id) DO UPDATE SET
@@ -40,6 +44,8 @@ BEGIN
     total_focus_time = user_stats.total_focus_time + NEW.duration,
     last_session_date = CURRENT_DATE,
     updated_at = NOW(),
+    pomodoro_count = user_stats.pomodoro_count + (CASE WHEN NEW.mode = 'pomodoro' THEN 1 ELSE 0 END),
+    deep_work_count = user_stats.deep_work_count + (CASE WHEN NEW.mode = 'deep-work' THEN 1 ELSE 0 END),
     -- Update streak
     streak_days = CASE
       WHEN user_stats.last_session_date = CURRENT_DATE THEN user_stats.streak_days
@@ -110,10 +116,10 @@ ALTER TABLE user_stats ENABLE ROW LEVEL SECURITY;
 -- Create policies (adjust based on your auth setup)
 -- For now, allow all operations (you should restrict this based on your auth)
 CREATE POLICY "Allow all operations on focus_sessions" ON focus_sessions
-  FOR ALL USING (true);
+  FOR ALL USING (false);
 
 CREATE POLICY "Allow all operations on user_stats" ON user_stats
-  FOR ALL USING (true);
+  FOR ALL USING (false);
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON focus_sessions(user_id);
@@ -123,14 +129,14 @@ CREATE INDEX IF NOT EXISTS idx_sessions_mode ON focus_sessions(mode);
 
 -- Create user_achievements table
 CREATE TABLE IF NOT EXISTS user_achievements (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id TEXT NOT NULL,
   achievement_id TEXT NOT NULL,
+  company_id TEXT NOT NULL,
   unlocked_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   
-  -- Unique constraint to prevent duplicate achievements
-  UNIQUE(user_id, achievement_id)
+  -- Composite primary key to ensure uniqueness per company
+  PRIMARY KEY(user_id, achievement_id, company_id)
 );
 
 -- Enable Row Level Security
@@ -138,12 +144,11 @@ ALTER TABLE user_achievements ENABLE ROW LEVEL SECURITY;
 
 -- Create policy for achievements
 CREATE POLICY "Allow all operations on user_achievements" ON user_achievements
-  FOR ALL USING (true);
+  FOR ALL USING (false);
 
 -- Create indexes for achievements
-CREATE INDEX IF NOT EXISTS idx_user_achievements_user_id ON user_achievements(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_achievements_unlocked_at ON user_achievements(unlocked_at);
-CREATE INDEX IF NOT EXISTS idx_achievements_user_achievement ON user_achievements(user_id, achievement_id);
+CREATE INDEX IF NOT EXISTS idx_user_achievements_user_company ON user_achievements(user_id, company_id);
 
 -- Sample query to test
 -- SELECT * FROM get_user_stats('your_user_id_here');

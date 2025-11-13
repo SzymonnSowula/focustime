@@ -15,6 +15,7 @@ interface CommunityStats {
   activeMembersToday: number;
   topMembers: Array<{
     userId: string;
+    username: string;
     sessions: number;
     focusTime: number;
   }>;
@@ -242,7 +243,7 @@ export function CommunityDashboard({ companyId }: CommunityDashboardProps) {
                         {index + 1}
                       </div>
                       <div>
-                        <div className="font-semibold text-white">User {member.userId.slice(0, 8)}</div>
+                        <div className="font-semibold text-gray-12">{member.username}</div>
                         <div className="text-sm text-[var(--neutral-400)]">
                           {member.sessions} sessions • {(member.focusTime / 3600).toFixed(1)}h
                         </div>

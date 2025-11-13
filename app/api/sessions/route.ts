@@ -1,67 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { verifyWhopUser } from '@/lib/auth';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  }
-);
+import { whopsdk } from '@/lib/whop-sdk';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { checkAchievements } from '@/lib/achievements';
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify Whop user authentication
+    const { mode, duration, companyId } = await request.json();
+    
+    if (!mode || !duration || !companyId) {
+      return NextResponse.json(
+        { error: 'Missing required fields: mode, duration, companyId' },
+        { status: 400 }
+      );
+    }
+
     let authenticatedUserId: string;
     try {
       authenticatedUserId = await verifyWhopUser();
     } catch (authError: any) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: authError.statusCode || 401 }
-      );
-    }
-    
-    const { mode, duration } = await request.json();
-
-    if (!mode || !duration) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-    
-    // Use authenticated userId instead of client-provided one
-    const userId = authenticatedUserId;
-
-    // First, ensure user exists in user_stats table
-    const { data: existingUser } = await supabase
-      .from('user_stats')
-      .select('user_id')
-      .eq('user_id', userId)
-      .single();
-
-    if (!existingUser) {
-      // Create user stats entry if it doesn't exist
-      await supabase
-        .from('user_stats')
-        .insert({
-          user_id: userId,
-          total_sessions: 0,
-          total_focus_time: 0,
-          streak_days: 0,
-        });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Insert the session (trigger will update stats automatically)
-    const { data, error } = await supabase
+    const access = await whopsdk.users.checkAccess(companyId, { id: authenticatedUserId });
+    if (!access.has_access) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const { data, error } = await supabaseAdmin
       .from('focus_sessions')
       .insert({
-        user_id: userId,
+        user_id: authenticatedUserId,
+        company_id: companyId,
         mode,
         duration,
       })
@@ -69,57 +39,59 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Failed to save session', details: error.message },
-        { status: 500 }
-      );
+      console.error('Supabase error during session insert:', error);
+      return NextResponse.json({ error: 'Failed to save session' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data });
+    // --- Początek nowego bloku ---
+    // 1. Pobierz zaktualizowane statystyki (trigger właśnie je zaktualizował)
+    const { data: statsData } = await supabaseAdmin
+      .from('user_stats')
+      .select('*')
+      .eq('user_id', authenticatedUserId)
+      .single();
+
+    // 2. Pobierz istniejące osiągnięcia
+    const { data: userAchievements } = await supabaseAdmin
+      .from('user_achievements')
+      .select('achievement_id')
+      .eq('user_id', authenticatedUserId)
+      .eq('company_id', companyId);
+
+    const unlockedIds = userAchievements?.map(a => a.achievement_id) || [];
+
+    // 3. Sprawdź, czy są nowe osiągnięcia
+    const newlyUnlocked = checkAchievements(
+      {
+        totalSessions: statsData?.total_sessions || 0,
+        totalFocusTime: statsData?.total_focus_time || 0,
+        streakDays: statsData?.streak_days || 0,
+        pomodoroCount: statsData?.pomodoro_count || 0,
+        deepWorkCount: statsData?.deep_work_count || 0,
+      },
+      {
+        completedAt: new Date(),
+        // Możesz dodać logikę weekendu, jeśli chcesz, np.:
+        // weekendSessions: { saturday: new Date().getDay() === 6, sunday: new Date().getDay() === 0 }
+      }
+    ).filter(ach => !unlockedIds.includes(ach.id)); // Filtruj tylko *nowe*
+
+    // 4. Zapisz nowe osiągnięcia w bazie
+    if (newlyUnlocked.length > 0) {
+      const achievementsToInsert = newlyUnlocked.map(ach => ({
+        user_id: authenticatedUserId,
+        company_id: companyId,
+        achievement_id: ach.id,
+        unlocked_at: new Date().toISOString(),
+      }));
+      await supabaseAdmin.from('user_achievements').insert(achievementsToInsert);
+    }
+
+    // 5. Zwróć dane sesji ORAZ nowe osiągnięcia
+    return NextResponse.json({ success: true, data, newAchievements: newlyUnlocked });
+    // --- Koniec nowego bloku ---
   } catch (error) {
     console.error('Error saving session:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    // Verify Whop user authentication
-    let userId: string;
-    try {
-      userId = await verifyWhopUser();
-    } catch (authError: any) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: authError.statusCode || 401 }
-      );
-    }
-
-    const { data, error } = await supabase
-      .from('focus_sessions')
-      .select('*')
-      .eq('user_id', userId)
-      .order('completed_at', { ascending: false })
-      .limit(50);
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch sessions' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, data });
-  } catch (error) {
-    console.error('Error fetching sessions:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

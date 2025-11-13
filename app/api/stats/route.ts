@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { verifyWhopUser } from '@/lib/auth';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  }
-);
+import { whopsdk } from '@/lib/whop-sdk';
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,11 +16,31 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const companyId = searchParams.get('companyId');
+
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company ID required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify user has access to this company
+    const access = await whopsdk.users.checkAccess(companyId, { id: userId });
+    if (!access.has_access) {
+      return NextResponse.json(
+        { error: 'No access to this company' },
+        { status: 403 }
+      );
+    }
+
     // Get user stats
-    const { data: statsData, error: statsError } = await supabase
+    const { data: statsData, error: statsError } = await supabaseAdmin
       .from('user_stats')
       .select('*')
       .eq('user_id', userId)
+      .eq('company_id', companyId)
       .single();
 
     if (statsError && statsError.code !== 'PGRST116') {
@@ -46,10 +56,11 @@ export async function GET(request: NextRequest) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const { data: todaySessions, error: todayError } = await supabase
+    const { data: todaySessions, error: todayError } = await supabaseAdmin
       .from('focus_sessions')
       .select('duration')
       .eq('user_id', userId)
+      .eq('company_id', companyId)
       .gte('completed_at', today.toISOString());
 
     if (todayError) {
@@ -61,10 +72,11 @@ export async function GET(request: NextRequest) {
     weekStart.setDate(weekStart.getDate() - weekStart.getDay());
     weekStart.setHours(0, 0, 0, 0);
 
-    const { data: weekSessions, error: weekError } = await supabase
+    const { data: weekSessions, error: weekError } = await supabaseAdmin
       .from('focus_sessions')
       .select('duration')
       .eq('user_id', userId)
+      .eq('company_id', companyId)
       .gte('completed_at', weekStart.toISOString());
 
     if (weekError) {
@@ -72,10 +84,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate best streak
-    const { data: allSessions } = await supabase
+    const { data: allSessions } = await supabaseAdmin
       .from('focus_sessions')
       .select('completed_at')
       .eq('user_id', userId)
+      .eq('company_id', companyId)
       .order('completed_at', { ascending: true });
 
     let bestStreak = 0;
