@@ -33,7 +33,7 @@ export default async function ExperiencePage({
 	return (
 		<div className="min-h-screen relative overflow-hidden">
 			{/* Animated Background Gradient */}
-			<div className="fixed inset-0 bg-gradient-to-br from-black to-neutral-900" />
+			<div className="fixed inset-0 bg-black" />
 			
 			{/* Ambient Light Effects */}
 			<div className="fixed top-0 left-1/4 w-96 h-96 bg-[var(--focus-primary)] rounded-full blur-[128px] opacity-10 animate-pulse" />
