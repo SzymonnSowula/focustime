@@ -34,9 +34,9 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Achievements</h2>
-              <p className="text-sm text-white">
+              <h6 className="text-sm text-white">
                 {unlockedCount} of {totalCount} unlocked
-              </p>
+              </h6>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
             <div className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {Math.round(progress)}%
             </div>
-            <div className="text-xs text-white">Complete</div>
+            <div className="text-xs text-white"><h6>Complete</h6>Complete</div>
           </div>
         </div>
 

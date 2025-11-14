@@ -8,6 +8,10 @@
 body {
   color: white; /* Ensure text is black in white mode for readability */
 }
+p {
+	  color: white;
+}
+
 
 
 /* biome-ignore lint/suspicious/noUnknownAtRules: this rule is imported from whop */
