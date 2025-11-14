@@ -5,9 +5,13 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "@whop/react/styles.css" layer(frosted_ui);
 
-
-
-
+body {
+  color: white !important;
+  
+}
+p {
+	color: white !important;
+}
 
 /* biome-ignore lint/suspicious/noUnknownAtRules: this rule is imported from whop */
 @config '../tailwind.config.ts';
