@@ -28,12 +28,12 @@ export default async function ExperiencePage({
 
 	// Check if user is creator/admin (you can customize this logic)
 	// For example, check if user owns the company or has admin role
-	const isAdmin = false; // Update with your logic to determine admin status
+	const isAdmin = company?.owner_user?.id === userId;
 
 	return (
 		<div className="min-h-screen relative overflow-hidden">
 			{/* Animated Background Gradient */}
-			<div className="fixed inset-0 bg-gradient-to-br from-black via-[var(--neutral-900)] to-[var(--neutral-800)]" />
+			<div className="fixed inset-0 bg-gradient-to-br from-neutral-50 via-neutral-100 to-neutral-200 dark:from-black dark:via-[var(--neutral-900)] dark:to-[var(--neutral-800)]" />
 			
 			{/* Ambient Light Effects */}
 			<div className="fixed top-0 left-1/4 w-96 h-96 bg-[var(--focus-primary)] rounded-full blur-[128px] opacity-10 animate-pulse" />
