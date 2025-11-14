@@ -54,7 +54,7 @@ export function StatsPanel({}: StatsPanelProps) {
   if (loading) {
     return (
       <div className="w-full max-w-4xl">
-        <h2 className="text-2xl font-bold text-white mb-6">Your Progress</h2>
+        <h2 className="text-2xl font-bold !text-white mb-6">Your Progress</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="backdrop-blur-2xl bg-white/5 rounded-2xl border border-white/10 p-6 animate-pulse flex flex-col items-center text-center">
@@ -100,7 +100,7 @@ export function StatsPanel({}: StatsPanelProps) {
 
   return (
     <div className="w-full max-w-4xl">
-      <h2 className="text-2xl font-bold text-white mb-6">Your Progress</h2>
+      <h2 className="text-2xl font-bold !text-white mb-6">Your Progress</h2>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {statCards.map((stat, index) => {
@@ -122,12 +122,12 @@ export function StatsPanel({}: StatsPanelProps) {
               }}
             >
               <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${stat.color} mb-4`}>
-                <Icon className="w-5 h-5 text-white" />
+                <Icon className="w-5 h-5 !text-white" />
               </div>
-              <div className="text-3xl font-bold text-white mb-1">
+              <div className="text-3xl font-bold !text-white mb-1">
                 {stat.value}
               </div>
-              <div className="text-sm text-white">
+              <div className="text-sm !text-white">
                 {stat.label}
               </div>
             </motion.div>

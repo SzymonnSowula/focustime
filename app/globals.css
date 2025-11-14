@@ -6,10 +6,11 @@
 @import "@whop/react/styles.css" layer(frosted_ui);
 
 body {
-  color: white; /* Ensure text is black in white mode for readability */
+  color: white !important;
+  
 }
 p {
-	  color: white;
+	color: white !important;
 }
 
 

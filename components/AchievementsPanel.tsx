@@ -30,11 +30,11 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500">
-              <Trophy className="w-5 h-5 text-white" />
+              <Trophy className="w-5 h-5 !text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">Achievements</h2>
-              <h6 className="text-sm text-white">
+              <h2 className="text-2xl font-bold !text-white">Achievements</h2>
+              <h6 className="text-sm !text-white">
                 {unlockedCount} of {totalCount} unlocked
               </h6>
             </div>
@@ -44,7 +44,7 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
             <div className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
               {Math.round(progress)}%
             </div>
-            <div className="text-xs text-white"><h6>Complete</h6>Complete</div>
+            <div className="text-xs !text-white"><h6>Complete</h6>Complete</div>
           </div>
         </div>
 
@@ -99,14 +99,14 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
 
                   <h3 className={`
                     font-semibold text-sm mb-1
-                    ${isUnlocked ? 'text-white' : 'text-white'}
+                    ${isUnlocked ? '!text-white' : '!text-white'}
                   `}>
                     {achievement.title}
                   </h3>
 
                   {!isUnlocked && (
                     <div className="absolute top-2 right-2">
-                      <Lock className="w-4 h-4 text-white" />
+                      <Lock className="w-4 h-4 !text-white" />
                     </div>
                   )}
                 </div>
@@ -146,7 +146,7 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                     onClick={() => setSelectedAchievement(null)}
                     className="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <X className="w-5 h-5 text-white" />
+                    <X className="w-5 h-5 !text-white" />
                   </button>
 
                   <div className="text-center">
@@ -157,28 +157,28 @@ export function AchievementsPanel({ unlockedAchievements }: AchievementsPanelPro
                       {selectedAchievement.icon}
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white mb-2">
+                    <h2 className="text-2xl font-bold !text-white mb-2">
                       {selectedAchievement.title}
                     </h2>
 
-                    <p className="text-white mb-4">
+                    <p className="!text-white mb-4">
                       {selectedAchievement.description}
                     </p>
 
                     {unlockedAchievements.includes(selectedAchievement.id) ? (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full text-white font-semibold">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full !text-white font-semibold">
                         <Trophy className="w-4 h-4" />
                         Unlocked!
                       </div>
                     ) : (
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-white">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full !text-white">
                         <Lock className="w-4 h-4" />
                         Locked
                       </div>
                     )}
 
                     <div className="mt-4 pt-4 border-t border-white/10">
-                      <div className="text-sm text-white">
+                      <div className="text-sm !text-white">
                         Requirement: {selectedAchievement.requirement}{' '}
                         {selectedAchievement.type === 'sessions' && 'sessions'}
                         {selectedAchievement.type === 'hours' && 'hours'}

@@ -66,7 +66,7 @@ export function AchievementNotification({ achievement, onClose }: AchievementNot
                       Achievement Unlocked!
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
+                  <h3 className="text-lg font-bold !text-white mb-1">
                     {achievement.title}
                   </h3>
                   <p className="text-sm text-gray-300">
