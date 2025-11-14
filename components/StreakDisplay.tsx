@@ -58,13 +58,13 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
               </motion.div>
               <div>
                 <h3 className="text-xl font-bold text-white">Daily Streak</h3>
-                <p className="text-sm text-gray-300">{getStreakMessage(streak)}</p>
+                <p className="text-sm text-white">{getStreakMessage(streak)}</p>
               </div>
             </div>
 
             {bestStreak > 0 && (
               <div className="text-right">
-                <div className="flex items-center gap-1 text-gray-300 text-xs mb-1">
+                <div className="flex items-center gap-1 text-white text-xs mb-1">
                   <TrendingUp className="w-3 h-3" />
                   <span>Best</span>
                 </div>
@@ -85,7 +85,7 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
               <div className="text-8xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                 {streak}
               </div>
-              <div className="text-center text-sm text-gray-400 mt-2">
+              <div className="text-center text-sm text-white mt-2">
                 {streak === 1 ? 'day' : 'days'}
               </div>
             </motion.div>
@@ -100,7 +100,7 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
                   p-3 rounded-xl text-center transition-all
                   ${streak >= milestone
                     ? `bg-gradient-to-r ${getStreakColor(milestone)} text-white`
-                    : 'bg-white/5 text-gray-400 border border-white/10'
+                    : 'bg-white/5 text-white border border-white/10'
                   }
                 `}
               >
@@ -118,7 +118,7 @@ export function StreakDisplay({ streak, bestStreak = 0 }: StreakDisplayProps) {
           {/* Progress to next milestone */}
           {streak > 0 && streak < 30 && (
             <div className="mt-4">
-              <div className="flex items-center justify-between text-xs text-gray-300 mb-2">
+              <div className="flex items-center justify-between text-xs text-white mb-2">
                 <span>Next milestone</span>
                 <span>
                   {streak >= 14 ? '30 days' : streak >= 7 ? '14 days' : streak >= 3 ? '7 days' : '3 days'}

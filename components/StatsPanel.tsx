@@ -127,7 +127,7 @@ export function StatsPanel({}: StatsPanelProps) {
               <div className="text-3xl font-bold text-white mb-1">
                 {stat.value}
               </div>
-              <div className="text-sm text-gray-300">
+              <div className="text-sm text-white">
                 {stat.label}
               </div>
             </motion.div>
