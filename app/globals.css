@@ -5,7 +5,7 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "@whop/react/styles.css" layer(frosted_ui);
 
-body, h1, h2, h3, h4, h5, h6, p, span, a, li, ul, ol, div {
+body, h1, h2, h3, h4, h5, h6, p, span, a, li, ul, ol, div, button {
   color: white !important;
 }
 
