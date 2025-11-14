@@ -81,7 +81,7 @@ export default async function ExperiencePage({
 				<footer className="border-t border-white/5 mt-24">
 					<div className="max-w-7xl mx-auto px-6 sm:px-8 py-8 text-center">
 						<p className="text-xs text-[var(--neutral-500)]">
-							Designed with focus in mind • Powering productive communities
+							Designed with focus in mind • Powering productive communities everywhere.
 						</p>
 					</div>
 				</footer>
